@@ -1,6 +1,6 @@
 import { HardhatUserConfig } from 'hardhat/types';
 import { accounts } from './helpers/test-wallets';
-import { eNetwork, ePolygonNetwork } from './helpers/types';
+import { eEthereumNetwork, eNetwork, ePolygonNetwork } from './helpers/types';
 import { HARDHATEVM_CHAINID } from './helpers/hardhat-constants';
 import { NETWORKS_RPC_URL } from './helper-hardhat-config';
 import dotenv from 'dotenv';
@@ -23,7 +23,6 @@ if (!process.env.SKIP_LOAD) {
   });
 }
 
-
 const DEFAULT_BLOCK_GAS_LIMIT = 12450000;
 const MNEMONIC_PATH = "m/44'/60'/0'/0";
 const MNEMONIC = process.env.MNEMONIC || '';
@@ -33,12 +32,12 @@ const BLOCK_EXPLORER_KEY = process.env.BLOCK_EXPLORER_KEY || '';
 
 const mainnetFork = MAINNET_FORK
   ? {
-    blockNumber: 16688267,
-    url: NETWORKS_RPC_URL['main'],
-  }
+      blockNumber: 16688267,
+      url: NETWORKS_RPC_URL['main'],
+    }
   : undefined;
 
-const getCommonNetworkConfig = (networkName: eNetwork, networkId: number) => ({
+const getCommonNetworkConfig = (networkName: eNetwork) => ({
   url: NETWORKS_RPC_URL[networkName] ?? '',
   accounts: {
     mnemonic: MNEMONIC,
@@ -66,7 +65,8 @@ const config: HardhatUserConfig = {
     ],
   },
   networks: {
-    mumbai: getCommonNetworkConfig(ePolygonNetwork.mumbai, 80001),
+    mumbai: getCommonNetworkConfig(ePolygonNetwork.mumbai),
+    goerli: getCommonNetworkConfig(eEthereumNetwork.goerli),
     hardhat: {
       hardfork: 'london',
       blockGasLimit: DEFAULT_BLOCK_GAS_LIMIT,
@@ -89,7 +89,7 @@ const config: HardhatUserConfig = {
         initialIndex: 0,
         count: 20,
       },
-    }
+    },
   },
   gasReporter: {
     enabled: TRACK_GAS,
