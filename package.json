@@ -5,6 +5,7 @@
         "test": "npm run compile && TRACK_GAS=true hardhat test",
         "quick-test": "hardhat test",
         "compile": "SKIP_LOAD=true hardhat clean && SKIP_LOAD=true hardhat compile",
+        "deploy-local": "hardhat deploy --network localhost",
         "format": "prettier --write .",
         "lint": "eslint ."
     },
