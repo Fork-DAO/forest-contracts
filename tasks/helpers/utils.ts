@@ -6,12 +6,11 @@ export async function deployContract(tx: any): Promise<Contract> {
   return result;
 }
 
-export async function deployWithVerify(
-  tx: any,
+export async function verifyContract(
+  deployedContract: Contract,
   args: any,
   contractPath: string
 ): Promise<Contract> {
-  const deployedContract = await deployContract(tx);
   let count = 0;
   const maxTries = 4;
   const runtimeHRE = require('hardhat');
@@ -42,6 +41,16 @@ export async function deployWithVerify(
     }
   }
 
+  return deployedContract;
+}
+
+export async function deployWithVerify(
+  tx: any,
+  args: any,
+  contractPath: string
+): Promise<Contract> {
+  const deployedContract = await deployContract(tx);
+  await verifyContract(deployedContract, args, contractPath);
   return deployedContract;
 }
 
