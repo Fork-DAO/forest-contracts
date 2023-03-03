@@ -7,7 +7,7 @@ task('test-premint', 'Make a transaction preminting one tree')
   .setAction(async (args, hre) => {
     const ethers = hre.ethers;
     const accounts = await ethers.getSigners();
-    const treasury = accounts[1];
+    const treasury = accounts[0];
     const user = accounts[2];
 
     console.log(`\n-- Testing ForestPreMint.sol preMint function --`);
