@@ -8,11 +8,11 @@ contract ForestPreMint {
     using Address for address payable;
 
     // Storage
-    uint256 maxSupply;
-    uint256 unitPrice;
-    address payable treasury;
+    uint256 public maxSupply;
+    uint256 public unitPrice;
+    address payable public treasury;
     uint256 private mintCounter;
-    mapping(address => uint256) mintsByAddress;
+    mapping(address => uint256) mintsByContributor;
 
     // Events
     event PreMint(address indexed _buyer, uint256 _mintQuantity);
@@ -38,12 +38,16 @@ contract ForestPreMint {
         if (amountToPay != msg.value) {
             revert ForestPreMintErrors.PaymentAmountInvalid(amountToPay, msg.value);
         }
-        mintsByAddress[msg.sender] = _mintQuantity;
-        mintCounter = mintCounter + _mintQuantity;
+        mintsByContributor[msg.sender] += _mintQuantity;
+        mintCounter += _mintQuantity;
         emit PreMint(msg.sender, _mintQuantity);
         (bool sent, ) = treasury.call{value: msg.value}('');
         if (!sent) {
             revert ForestPreMintErrors.PaymentFailed();
         }
+    }
+
+    function getMintByAddress(address _contributor) external view returns (uint256) {
+        return mintsByContributor[_contributor];
     }
 }

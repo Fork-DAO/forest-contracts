@@ -54,6 +54,6 @@ export async function deployWithVerify(
   return deployedContract;
 }
 
-async function delay(ms: number) {
+export async function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

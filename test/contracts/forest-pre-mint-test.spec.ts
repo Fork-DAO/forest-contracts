@@ -131,5 +131,22 @@ runFreshSuite('Forest Pre Mint test', function () {
         treasuryInitialBalance.add(unitPrice.mul(maxSupply))
       );
     });
+
+    it('should buy two separated mints', async function () {
+      const preMint = forestPreMint.connect(userTwo).preMint(1, { value: unitPrice });
+      expect(await preMint)
+        .to.emit(forestPreMint, 'PreMint')
+        .withArgs(userTwoAddress, 1);
+      expect(await treasury.getBalance()).to.be.eql(treasuryInitialBalance.add(unitPrice));
+      expect(await forestPreMint.getMintByAddress(userTwoAddress)).to.be.eq(ethers.constants.One);
+      const secondPreMint = forestPreMint.connect(userTwo).preMint(1, { value: unitPrice });
+      expect(await secondPreMint)
+        .to.emit(forestPreMint, 'PreMint')
+        .withArgs(userTwoAddress, 1);
+      expect(await treasury.getBalance()).to.be.eql(
+        treasuryInitialBalance.add(unitPrice).add(unitPrice)
+      );
+      expect(await forestPreMint.getMintByAddress(userTwoAddress)).to.be.eq(ethers.constants.Two);
+    });
   });
 });

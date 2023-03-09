@@ -1,7 +1,7 @@
 import '@nomiclabs/hardhat-ethers';
 import { task } from 'hardhat/config';
 import { deployWithVerify } from './helpers/utils';
-import { ForestPreMint__factory } from '../typechain-types';
+import { ForestPreMint__factory, ForestNFT__factory } from '../typechain-types';
 
 const MAX_SUPPLY = 10;
 const UNIT_PRICE = 1;
@@ -19,4 +19,11 @@ task('deploy-and-verify', 'deploys and verifies the fork forest').setAction(asyn
     'contracts/ForestPreMint.sol:ForestPreMint'
   );
   console.log(`\n-- Deploy & Verify succesful at ${preMint.address} --`);
+  console.log(`\n-- Deploying & Verifying ForestNFT.sol --`);
+  const forestNFT = await deployWithVerify(
+    new ForestNFT__factory(deployer).deploy(preMint.address),
+    [preMint.address],
+    'contracts/ForestNFT.sol:ForestNFT'
+  );
+  console.log(`\n-- Deploy & Verify succesful at ${forestNFT.address} --`);
 });
