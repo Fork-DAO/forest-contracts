@@ -17,7 +17,8 @@ contract ForestNFT is ERC721, ERC721Enumerable {
 
     constructor(address _forestPreMint) ERC721('ForestNFT', 'FNFT') {
         forestPreMint = ForestPreMint(_forestPreMint);
-        baseURI = 'https://ipfs.filebase.io/ipfs/QmPRPtysRaqgCTCvvPmcnKnDkZfUvb5NhoD1K5e8SVoLSi/';
+        baseURI = 'https://ipfs.filebase.io/ipfs/QmezhhCyQB1hyjoy5ws8RrVDG2kwnLXcLzCxiPGR5CYu5D/';
+        tokenIdCounter.increment();
     }
 
     function safeMint(address _to) public {
