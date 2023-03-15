@@ -2,6 +2,8 @@
 pragma solidity ^0.8.10;
 
 library ForestNFTErrors {
-    error MintorNotAContributor(address _mintor);
-    error MintorHasAlreadyMint(address _mintor);
+    error ConstructorParamsInvalid();
+    error MaxSupplyReached(uint256 _maxSupply);
+    error PaymentAmountInvalid(uint256 _expectedPaymentAmount, uint256 _actualPaymentAmount);
+    error PaymentFailed();
 }

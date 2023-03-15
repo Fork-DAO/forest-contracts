@@ -4,7 +4,7 @@ import { BigNumber, Signer, Wallet } from 'ethers';
 import { revertToSnapshot, takeSnapshot } from './helpers/utils';
 import { FAKE_PRIVATEKEY } from './helpers/constants';
 import { solidity } from 'ethereum-waffle';
-import { ForestPreMint, ForestPreMint__factory } from '../typechain-types';
+import { ForestNFT, ForestNFT__factory } from '../typechain-types';
 import { ethers } from 'hardhat';
 
 use(solidity);
@@ -22,7 +22,7 @@ export let userAddress: string;
 export let userTwoAddress: string;
 export let userThreeAddress: string;
 export let treasuryAddress: string;
-export let forestPreMint: ForestPreMint;
+export let forestNFT: ForestNFT;
 export const maxSupply = 30;
 export const unitPrice = ethers.utils.parseEther('10');
 
@@ -55,10 +55,6 @@ before(async function () {
   treasuryInitialBalance = await treasury.getBalance();
 
   // Deployment
-  forestPreMint = await new ForestPreMint__factory(deployer).deploy(
-    maxSupply,
-    unitPrice,
-    treasuryAddress
-  );
-  expect(forestPreMint).to.not.be.undefined;
+  forestNFT = await new ForestNFT__factory(deployer).deploy(maxSupply, unitPrice, treasuryAddress);
+  expect(forestNFT).to.not.be.undefined;
 });

@@ -4,41 +4,51 @@ pragma solidity ^0.8.9;
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 import '@openzeppelin/contracts/utils/Counters.sol';
-import './ForestPreMint.sol';
 import {ForestNFTErrors} from './libraries/ForestNFTErrors.sol';
 
 contract ForestNFT is ERC721, ERC721Enumerable {
     using Counters for Counters.Counter;
 
+    uint256 public maxSupply;
+    uint256 public unitPrice;
+    address payable public treasury;
     Counters.Counter private tokenIdCounter;
-    ForestPreMint public forestPreMint;
-    mapping(address => bool) private mintoors;
-    string public baseURI;
 
-    constructor(address _forestPreMint) ERC721('ForestNFT', 'FNFT') {
-        forestPreMint = ForestPreMint(_forestPreMint);
-        baseURI = 'https://ipfs.filebase.io/ipfs/QmezhhCyQB1hyjoy5ws8RrVDG2kwnLXcLzCxiPGR5CYu5D/';
+    constructor(
+        uint256 _maxSupply,
+        uint256 _unitPrice,
+        address payable _treasury
+    ) ERC721('ForestNFT', 'FNFT') {
+        if (_maxSupply == 0 || _unitPrice == 0 || _treasury == address(0)) {
+            revert ForestNFTErrors.ConstructorParamsInvalid();
+        }
+        maxSupply = _maxSupply;
+        unitPrice = _unitPrice;
+        treasury = _treasury;
         tokenIdCounter.increment();
     }
 
-    function safeMint(address _to) public {
-        if (forestPreMint.getMintByAddress(_to) == 0) {
-            revert ForestNFTErrors.MintorNotAContributor(_to);
+    function safeMint(uint _quantity) external payable {
+        if (tokenIdCounter.current() + _quantity > maxSupply + 1) {
+            revert ForestNFTErrors.MaxSupplyReached(maxSupply);
         }
-        if (mintoors[_to]) {
-            revert ForestNFTErrors.MintorHasAlreadyMint(_to);
+        uint256 amountToPay = _quantity * unitPrice;
+        if (amountToPay != msg.value) {
+            revert ForestNFTErrors.PaymentAmountInvalid(amountToPay, msg.value);
         }
-        uint256 mintAmount = forestPreMint.getMintByAddress(_to);
-        for (uint256 i = 0; i < mintAmount; i++) {
+        for (uint256 i = 0; i < _quantity; i++) {
             uint256 tokenId = tokenIdCounter.current();
             tokenIdCounter.increment();
-            _safeMint(_to, tokenId);
+            _safeMint(msg.sender, tokenId);
         }
-        mintoors[_to] = true;
+        (bool sent, ) = treasury.call{value: msg.value}('');
+        if (!sent) {
+            revert ForestNFTErrors.PaymentFailed();
+        }
     }
 
     function _baseURI() internal view override returns (string memory) {
-        return baseURI;
+        return 'https://ipfs.filebase.io/ipfs/QmezhhCyQB1hyjoy5ws8RrVDG2kwnLXcLzCxiPGR5CYu5D/';
     }
 
     /* Solidity needs these overrides */
@@ -58,12 +68,9 @@ contract ForestNFT is ERC721, ERC721Enumerable {
         return super.tokenURI(tokenId);
     }
 
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override(ERC721, ERC721Enumerable)
-        returns (bool)
-    {
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view override(ERC721, ERC721Enumerable) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 }
