@@ -47,7 +47,7 @@ contract ForestNFT is ERC721, ERC721Enumerable {
         }
     }
 
-    function _baseURI() internal view override returns (string memory) {
+    function _baseURI() internal pure override returns (string memory) {
         return 'https://ipfs.filebase.io/ipfs/QmezhhCyQB1hyjoy5ws8RrVDG2kwnLXcLzCxiPGR5CYu5D/';
     }
 

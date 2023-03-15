@@ -86,6 +86,13 @@ runFreshSuite('Forest NFT test', function () {
         forestNFTWithInvalidTreasury.connect(userTwo).safeMint(1, { value: unitPrice })
       ).to.be.revertedWith(ERRORS.PAYMENT_FAILED);
     });
+
+    it('should have the correct URI', async function () {
+      await forestNFT.connect(user).safeMint(1, { value: unitPrice });
+      expect(await forestNFT.tokenURI(1)).to.be.eq(
+        'https://ipfs.filebase.io/ipfs/QmezhhCyQB1hyjoy5ws8RrVDG2kwnLXcLzCxiPGR5CYu5D/1'
+      );
+    });
   });
 
   describe('Safe Mint happy', function () {
