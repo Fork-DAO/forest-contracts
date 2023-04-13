@@ -66,6 +66,7 @@ const config: HardhatUserConfig = {
   },
   networks: {
     mumbai: getCommonNetworkConfig(ePolygonNetwork.mumbai),
+    polygon: getCommonNetworkConfig(ePolygonNetwork.polygon),
     goerli: getCommonNetworkConfig(eEthereumNetwork.goerli),
     hardhat: {
       hardfork: 'london',

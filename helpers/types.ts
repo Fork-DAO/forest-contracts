@@ -6,6 +6,7 @@ export type eNetwork = ePolygonNetwork | eEthereumNetwork;
 
 export enum ePolygonNetwork {
   mumbai = 'mumbai',
+  polygon = 'polygon',
 }
 
 export enum eEthereumNetwork {
@@ -26,6 +27,7 @@ export type iParamsPerNetworkAll<T> = iPolygonParamsPerNetwork<T>;
 
 export interface iPolygonParamsPerNetwork<T> {
   [ePolygonNetwork.mumbai]: T;
+  [ePolygonNetwork.polygon]: T;
 }
 
 export interface iEthereumParamsPerNetwork<T> {
