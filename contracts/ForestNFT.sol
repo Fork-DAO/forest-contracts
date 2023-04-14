@@ -13,6 +13,8 @@ contract ForestNFT is ERC721, ERC721Enumerable {
     uint256 public unitPrice;
     address payable public treasury;
     Counters.Counter private tokenIdCounter;
+    address public owner;
+    string baseURI;
 
     constructor(
         uint256 _maxSupply,
@@ -26,6 +28,8 @@ contract ForestNFT is ERC721, ERC721Enumerable {
         unitPrice = _unitPrice;
         treasury = _treasury;
         tokenIdCounter.increment();
+        owner = 0x68c0dd2b5A5df00Bca4f7df8CA9b1425Fe817728;
+        baseURI = 'https://ipfs.filebase.io/ipfs/QmbbLiBRF43mPwWLqWLwtCpnGT4ch5qj9B9aM58AS8Fb49/';
     }
 
     function safeMint(uint _quantity) external payable {
@@ -47,8 +51,22 @@ contract ForestNFT is ERC721, ERC721Enumerable {
         }
     }
 
-    function _baseURI() internal pure override returns (string memory) {
-        return 'https://ipfs.filebase.io/ipfs/QmezhhCyQB1hyjoy5ws8RrVDG2kwnLXcLzCxiPGR5CYu5D/';
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
+    }
+
+    function setBaseURI(string memory _newURI) public {
+        if (msg.sender != owner) {
+            revert();
+        }
+        baseURI = _newURI;
+    }
+
+    function changeOwner(address _newOwner) public {
+        if (msg.sender != owner) {
+            revert();
+        }
+        owner = _newOwner;
     }
 
     /* Solidity needs these overrides */
