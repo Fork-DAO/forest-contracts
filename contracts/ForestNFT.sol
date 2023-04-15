@@ -29,7 +29,7 @@ contract ForestNFT is ERC721, ERC721Enumerable {
         treasury = _treasury;
         tokenIdCounter.increment();
         owner = 0x68c0dd2b5A5df00Bca4f7df8CA9b1425Fe817728;
-        baseURI = 'https://ipfs.filebase.io/ipfs/QmbbLiBRF43mPwWLqWLwtCpnGT4ch5qj9B9aM58AS8Fb49/';
+        baseURI = 'https://ipfs.filebase.io/ipfs/QmWH5xT1fQu5ZKZuFqLj4FGcrs5Ugk3gMMpufvAYghbAL2/';
     }
 
     function safeMint(uint _quantity) external payable {
@@ -67,6 +67,13 @@ contract ForestNFT is ERC721, ERC721Enumerable {
             revert();
         }
         owner = _newOwner;
+    }
+
+    function burnOwner() public {
+        if (msg.sender != owner) {
+            revert();
+        }
+        owner = address(0);
     }
 
     /* Solidity needs these overrides */
